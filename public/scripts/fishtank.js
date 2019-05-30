@@ -1,11 +1,10 @@
-
 class Fishtank {
   constructor(divName) {
     this.divName = divName;
     this.denizens = {};
     this.specieses = {};
     this.drawing = true;
-    this.drawGraphicsBound = this.drawGraphics.bind(this);    // ahahaha, welcome to `this` hell.  callback hell never had it so fiery.
+    this.drawGraphicsBound = this.drawGraphics.bind(this); // ahahaha, welcome to `this` hell.  callback hell never had it so fiery.
     requestAnimationFrame(this.drawGraphicsBound);
   }
 
@@ -32,6 +31,7 @@ class Fishtank {
 
   getProximateDenizens(center, radius) {
     function isNearCenter(individual) {
+      console.log(individual)
       return individual.position.distance(center) <= radius;
       //return distance(individual.position, center) <= radius;
     }
@@ -39,12 +39,14 @@ class Fishtank {
   }
 
   removeDenizen(id, duration) {
-    delete (this.denizens[id]);
+    delete(this.denizens[id]);
     duration = duration || 1;
     duration = Number(duration) + 's';
     var $victim = $('#' + id);
     $victim.off();
-    $victim.css({ transition: 'all ' + duration });
+    $victim.css({
+      transition: 'all ' + duration
+    });
     $victim.css({
       opacity: '0',
       width: $victim.width() * 3,
@@ -76,17 +78,19 @@ class Fishtank {
   }
 
   drawGraphics() {
-    this.runPhysics();  // TODO: maybe this should be on a separate setInterval
+    this.runPhysics(); // TODO: maybe this should be on a separate setInterval
     var $fishtank = $('#' + this.divName);
     var centerX = Math.floor(window.innerWidth / 2);
-    var floorY  = Math.floor(window.innerHeight * 0.95);
+    var floorY = Math.floor(window.innerHeight * 0.95);
     for (var id in this.denizens) {
       var denizen = this.denizens[id];
       var renderRules = denizen.renderRules();
       var $denizen = $('#' + id);
       if ($denizen.length === 0) {
         $denizen = $(`<img id="${id}"></img>`);
-        $denizen.css({position: 'fixed'});
+        $denizen.css({
+          position: 'fixed'
+        });
         $denizen.click(denizen.onClick);
         $fishtank.append($denizen);
       }
@@ -101,7 +105,7 @@ class Fishtank {
       if (renderRules.y !== undefined) {
         $denizen.css('bottom', renderRules.y + 10);
       }
-      $denizen.css(renderRules.css);    // this is allowed to override the previous, if the Denizen wants to
+      $denizen.css(renderRules.css); // this is allowed to override the previous, if the Denizen wants to
     }
 
     if (this.drawing) {
@@ -111,7 +115,7 @@ class Fishtank {
 
   getBounds() {
     return {
-      minX: - window.innerWidth / 2,
+      minX: -window.innerWidth / 2,
       maxX: window.innerWidth / 2,
       minY: -10,
       maxY: window.innerHeight - 10,
@@ -119,4 +123,3 @@ class Fishtank {
   }
 
 }
-
